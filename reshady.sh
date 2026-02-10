@@ -199,6 +199,7 @@ suggest_api() {
 
 copy_crt_top() {
   local merged="$1"
+  [[ -d "$merged" ]] || return 0
   if [[ -f "${merged}/SweetFX/CRT.fx" ]]; then
     cp "${merged}/SweetFX/CRT.fx" "${merged}/CRT_PSX.fx"
   elif [[ -f "${merged}/CRT.fx" ]]; then
@@ -369,7 +370,7 @@ do_install() {
   local api_choice
   api_choice="$(suggest_api "$APPID")"
   install_reshade "$GAME_PATH" "$api_choice"
-  copy_crt_top "${RESH_DIR}/ReShade_shaders/Merged/Shaders"
+  copy_crt_top "${GAME_PATH}/ReShade_shaders/Merged/Shaders"
   local preset_file
   preset_file="$(choose_preset)"
   apply_preset "$GAME_PATH" "$preset_file"
@@ -383,7 +384,7 @@ do_preset_only() {
   choose_game "${libs[@]}"
   local preset_file
   preset_file="$(choose_preset)"
-  copy_crt_top "${RESH_DIR}/ReShade_shaders/Merged/Shaders"
+  copy_crt_top "${GAME_PATH}/ReShade_shaders/Merged/Shaders"
   apply_preset "$GAME_PATH" "$preset_file"
   echo "Preset applied to ${GAME_NAME}. Reload in-game (Home -> Reload)."
 }
@@ -459,7 +460,7 @@ if [[ "${1:-}" == "install" ]]; then
   require_cmd curl; require_cmd python3
   detect_steam_base; detect_userdata
   install_reshade "$GAME_PATH" "$API"
-  copy_crt_top "${RESH_DIR}/ReShade_shaders/Merged/Shaders"
+  copy_crt_top "${GAME_PATH}/ReShade_shaders/Merged/Shaders"
   apply_preset "$GAME_PATH" "$PRESET"
   set_launch_option "$APPID" 'WINEDLLOVERRIDES="d3dcompiler_47=n;d3d9=n,b" %command%'
   exit 0
@@ -475,7 +476,7 @@ if [[ "${1:-}" == "preset" ]]; then
     esac
   done
   [[ -n "${GAME_PATH:-}" && -n "${PRESET:-}" ]] || die "Missing args for preset"
-  copy_crt_top "${RESH_DIR}/ReShade_shaders/Merged/Shaders"
+  copy_crt_top "${GAME_PATH}/ReShade_shaders/Merged/Shaders"
   apply_preset "$GAME_PATH" "$PRESET"
   exit 0
 fi

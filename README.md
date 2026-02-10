@@ -40,18 +40,17 @@ Install guide: desktop / Deck (script)
 3) Choose the game, accept the suggested API (or pick one), choose a preset.
 4) Restart Steam, launch the game, press Home to open ReShade.
 
-Install guide: Decky plugin (clean route)
-- The script already exposes non-interactive CLI calls (`list-games`, `install`, `preset`, `toggle`, `remove`). A Decky backend can shell out to these.
-- Frontend: list games via `list-games`, then call `install`/`toggle`/`preset` as the user clicks buttons.
-- Bundle `presets/` with the plugin; expose an “Add custom preset” file picker that copies .ini into that folder and calls `preset`.
-CLI (for automation / Decky backend)
-```bash
-./reshady.sh list-games
-./reshady.sh install --appid 377840 --game-path "/path/to/game/x64" --api d3d9 --preset presets/psx_crt.ini
-./reshady.sh preset  --game-path "/path/to/game/x64" --preset presets/clean_bloom.ini
-./reshady.sh toggle  --appid 377840 --game-path "/path/to/game/x64"
-./reshady.sh remove  --game-path "/path/to/game/x64"
-```
+Decky plugin integration (recommended flow)
+- Backend: call the existing CLI commands (`list-games`, `install`, `preset`, `toggle`, `remove`). No extra binaries needed; the script auto-downloads `reshade-linux.sh` if missing and handles ReShade installation.
+- Frontend wire-up:
+  - On load, call `./reshady.sh list-games` to populate games (format: `appid|name|path`).
+  - “Install/Update” button -> `install --appid <id> --game-path <path> --api <d3d9|dxgi|opengl32|d3d8> --preset <ini>`.
+  - “Apply preset” button -> `preset --game-path <path> --preset <ini>`.
+  - “Toggle” button -> `toggle --appid <id> --game-path <path>` (non-destructive rename + launch option change).
+  - “Remove” button -> `remove --game-path <path>` (backs up files).
+- Ship the `presets/` folder with the plugin; add a file picker that copies a user .ini into `presets/` then calls `preset` so it shows up in-game.
+- Decky backend tip: run commands with `cwd` set to the plugin directory so relative `presets/` paths resolve.
+- Restart Steam after install/toggle because launch options are written to `userdata/<id>/config/localconfig.vdf`.
 Main menu options:
 1) Install/Update ReShade – choose a game; script suggests an API from a known list (else prompts), then pick a preset.
 2) Apply preset only – reuses existing ReShade install and just swaps the preset.
