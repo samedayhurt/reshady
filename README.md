@@ -51,6 +51,20 @@ Decky plugin integration (recommended flow)
 - Ship the `presets/` folder with the plugin; add a file picker that copies a user .ini into `presets/` then calls `preset` so it shows up in-game.
 - Decky backend tip: run commands with `cwd` set to the plugin directory so relative `presets/` paths resolve.
 - Restart Steam after install/toggle because launch options are written to `userdata/<id>/config/localconfig.vdf`.
+
+Decky plugin in this repo
+- The repo now includes a Decky plugin scaffold that shells out to `reshady.sh`.
+- Build: `npm install` then `npm run build` (produces `dist/index.js`). Build on the Deck or any box with Node 18+; copy `dist/` over if building elsewhere.
+- Install to Decky: copy/symlink the repo into `~/homebrew/plugins/Reshady`, or zip the contents and drop into Decky Loader. Ensure `reshady.sh` remains executable (`chmod +x reshady.sh`); the backend runs it with cwd set to the plugin dir so `presets/` resolve.
+- The plugin backend exposes `list_games`, `install`, `apply_preset`, `toggle`, `remove`; the frontend provides buttons for each and preset/API selectors.
+
+Decky quickstart (Deck Desktop mode)
+1) `git clone https://github.com/samedayhurt/reshady.git && cd reshady`
+2) `npm install`
+3) `npm run build`
+4) `chmod +x reshady.sh`
+5) `mkdir -p ~/homebrew/plugins/Reshady && cp -r . ~/homebrew/plugins/Reshady`
+6) Restart Decky Loader; the “Reshady” tab should appear with game picker, preset/API selectors, and Install/Toggle/Remove buttons.
 Main menu options:
 1) Install/Update ReShade – choose a game; script suggests an API from a known list (else prompts), then pick a preset.
 2) Apply preset only – reuses existing ReShade install and just swaps the preset.

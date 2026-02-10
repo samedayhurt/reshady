@@ -1,0 +1,10 @@
+{
+  "name": "Reshady",
+  "author": "samedayhurt",
+  "version": "0.1.0",
+  "description": "Install/Toggle ReShade on Deck games via reshady.sh",
+  "target": "decky-loader",
+  "main": "dist/index.js",
+  "backend": "backend/main.py",
+  "license": "MIT"
+}
